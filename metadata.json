@@ -1,0 +1,8 @@
+{
+  "name": "Remix Cruzeiro do Sul - Landing Page Influenciadores",
+  "description": "Landing page mobile-first de captação de leads para campanha de influenciadores da Universidade Cruzeiro do Sul com cupom automático e estética de app de mobilidade.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

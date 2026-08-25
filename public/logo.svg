@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 130" fill="none">
+  <!-- Symbol: Star with Orbit -->
+  <g transform="translate(5, 5)">
+    <!-- Star -->
+    <path 
+      d="M 68 12 L 92 112 L 22 42 L 114 42 L 44 112 Z" 
+      stroke="#FFB833" 
+      stroke-width="11" 
+      stroke-linecap="round" 
+      stroke-linejoin="round" 
+      fill="none" 
+    />
+    <!-- Orbit Ring -->
+    <ellipse 
+      cx="68" 
+      cy="62" 
+      rx="58" 
+      ry="22" 
+      transform="rotate(-18 68 62)" 
+      stroke="#FFB833" 
+      stroke-width="11" 
+      fill="none" 
+    />
+  </g>
+
+  <!-- Typography -->
+  <text x="148" y="58" font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="40" fill="#FFB833" letter-spacing="-0.5">Cruzeiro do Sul</text>
+  <text x="148" y="104" font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="40" fill="#FFB833" letter-spacing="-0.5">Virtual</text>
+</svg>

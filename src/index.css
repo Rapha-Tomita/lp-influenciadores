@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@media (min-width: 768px) {
+  .desktop-bg {
+    background-image: linear-gradient(rgba(0, 26, 51, 0.7), rgba(0, 26, 51, 0.7)), url('/bg-grainy.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+}
+
