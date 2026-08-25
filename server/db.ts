@@ -35,3 +35,21 @@ export function getPool(): pg.Pool {
   if (!pool) pool = createPool();
   return pool;
 }
+
+let schemaReady: Promise<void> | null = null;
+
+export async function ensureLeadsSchema(): Promise<void> {
+  if (!schemaReady) {
+    schemaReady = (async () => {
+      await getPool().query(`
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS kommo_lead_id BIGINT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS kommo_contact_id BIGINT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS origem_new TEXT NOT NULL DEFAULT 'Form-influencer';
+      `);
+    })().catch((err) => {
+      schemaReady = null;
+      throw err;
+    });
+  }
+  await schemaReady;
+}

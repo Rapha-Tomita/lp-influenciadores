@@ -17,7 +17,16 @@ export const FormSheet: React.FC<FormSheetProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [submittedData, setSubmittedData] = useState<LeadFormData | null>(null);
+
+  const inputClass = (hasError: boolean) =>
+    `w-full bg-white rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#001A33] focus:outline-none focus:ring-2 focus:border-transparent transition-all placeholder:text-gray-300 shadow-sm ${
+      hasError
+        ? 'border-2 border-red-500 focus:ring-red-400'
+        : 'border border-gray-200 focus:ring-[#FFCC00]'
+    }`;
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, '');
@@ -32,14 +41,30 @@ export const FormSheet: React.FC<FormSheetProps> = ({
     }
 
     setWhatsapp(value);
+    if (phoneError) setPhoneError('');
+    if (submitError) setSubmitError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName.trim() || whatsapp.length < 14) {
-      alert('Por favor, preencha seu nome completo e um número de WhatsApp válido.');
-      return;
+    const phoneDigits = whatsapp.replace(/\D/g, '');
+    let valid = true;
+
+    if (!fullName.trim() || fullName.trim().length < 2) {
+      setNameError('Informe seu nome completo.');
+      valid = false;
+    } else {
+      setNameError('');
     }
+
+    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+      setPhoneError('WhatsApp inválido. Use DDD + número, ex: (11) 99999-9999.');
+      valid = false;
+    } else {
+      setPhoneError('');
+    }
+
+    if (!valid) return;
 
     const data: LeadFormData = {
       fullName,
@@ -96,7 +121,7 @@ export const FormSheet: React.FC<FormSheetProps> = ({
               Preencha os dados abaixo para ativar seu desconto exclusivo.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               {/* Nome Completo */}
               <div className="space-y-1.5">
                 <label htmlFor="fullName" className="text-[10px] font-black uppercase text-gray-400 ml-1 tracking-wider block">
@@ -106,11 +131,16 @@ export const FormSheet: React.FC<FormSheetProps> = ({
                   type="text"
                   id="fullName"
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  onChange={(e) => {
+                    setFullName(e.target.value);
+                    if (nameError) setNameError('');
+                  }}
                   placeholder="Nome completo"
                   required
-                  className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#001A33] focus:outline-none focus:ring-2 focus:ring-[#FFCC00] focus:border-transparent transition-all placeholder:text-gray-300 shadow-sm"
+                  aria-invalid={Boolean(nameError)}
+                  className={inputClass(Boolean(nameError))}
                 />
+                {nameError ? <p className="text-xs text-red-600 font-semibold ml-1">{nameError}</p> : null}
               </div>
 
               {/* WhatsApp */}
@@ -125,8 +155,10 @@ export const FormSheet: React.FC<FormSheetProps> = ({
                   onChange={handlePhoneChange}
                   placeholder="(11) 99999-9999"
                   required
-                  className="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#001A33] focus:outline-none focus:ring-2 focus:ring-[#FFCC00] focus:border-transparent transition-all placeholder:text-gray-300 shadow-sm"
+                  aria-invalid={Boolean(phoneError)}
+                  className={inputClass(Boolean(phoneError))}
                 />
+                {phoneError ? <p className="text-xs text-red-600 font-semibold ml-1">{phoneError}</p> : null}
               </div>
 
               {/* Modalidade */}
