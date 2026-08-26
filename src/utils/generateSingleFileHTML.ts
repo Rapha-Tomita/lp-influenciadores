@@ -1277,7 +1277,7 @@ export function generateSingleFileHTML(activeCoupon: string = 'JULIA70'): string
       document.getElementById('sentCouponCode').innerText = coupon;
       
       const whatsappMsg = encodeURIComponent("Olá! Meu nome é " + name + ". Vim pelo cupom " + coupon + " da campanha de criadores e quero garantir minha bolsa na Cruzeiro do Sul.");
-      document.getElementById('whatsappLink').href = "https://wa.me/5511999999999?text=" + whatsappMsg;
+      document.getElementById('whatsappLink').href = "https://wa.me/5511917479873?text=" + whatsappMsg;
 
       document.getElementById('formState').style.display = 'none';
       document.getElementById('confirmationState').style.display = 'block';

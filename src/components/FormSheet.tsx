@@ -104,7 +104,7 @@ export const FormSheet: React.FC<FormSheetProps> = ({
   const getWhatsAppUrl = () => {
     if (!submittedData) return '#';
     const text = `Olá! Meu nome é ${submittedData.fullName}. Vim pela campanha e quero garantir minha bolsa na Cruzeiro do Sul!`;
-    return `https://wa.me/5511999999999?text=${encodeURIComponent(text)}`;
+    return `https://wa.me/5511917479873?text=${encodeURIComponent(text)}`;
   };
 
   return (
