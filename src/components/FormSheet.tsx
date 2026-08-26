@@ -76,7 +76,8 @@ export const FormSheet: React.FC<FormSheetProps> = ({
     setIsSubmitting(true);
     setSubmitError('');
     try {
-      const res = await fetch('/api/leads', {
+      const apiBase = String(import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+      const res = await fetch(`${apiBase}/api/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
