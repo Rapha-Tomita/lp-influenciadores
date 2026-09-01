@@ -5,6 +5,13 @@ export type KommoCreateInput = {
   phoneDigits: string;
   whatsapp?: string;
   courseType?: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmContent?: string;
+  utmTerm?: string;
+  utmId?: string;
+  sourceUrl?: string;
 };
 
 export type KommoCreateResult = {
@@ -60,11 +67,70 @@ async function kommoRequest(method: string, path: string, payload?: unknown): Pr
   return body;
 }
 
+function utmNoteText(input: KommoCreateInput): string {
+  const lines = [
+    input.utmSource && `utm_source: ${input.utmSource}`,
+    input.utmMedium && `utm_medium: ${input.utmMedium}`,
+    input.utmCampaign && `utm_campaign: ${input.utmCampaign}`,
+    input.utmContent && `utm_content: ${input.utmContent}`,
+    input.utmTerm && `utm_term: ${input.utmTerm}`,
+    input.utmId && `utm_id: ${input.utmId}`,
+    input.sourceUrl && `url: ${input.sourceUrl}`,
+  ].filter(Boolean);
+  return lines.length ? `Atribuição LP Influenciadores\n${lines.join('\n')}` : '';
+}
+
+async function applyUtmToLead(leadId: number, input: KommoCreateInput): Promise<void> {
+  const utmSourceFieldId = Number(process.env.KOMMO_UTM_SOURCE_FIELD_ID || 15860);
+  const utmMediumFieldId = Number(process.env.KOMMO_UTM_MEDIUM_FIELD_ID || 15856);
+  const utmCampaignFieldId = Number(process.env.KOMMO_UTM_CAMPAIGN_FIELD_ID || 15858);
+  const utmContentFieldId = Number(process.env.KOMMO_UTM_CONTENT_FIELD_ID || 15854);
+  const utmTermFieldId = Number(process.env.KOMMO_UTM_TERM_FIELD_ID || 15862);
+  const utmReferrerFieldId = Number(process.env.KOMMO_UTM_REFERRER_FIELD_ID || 15864);
+  const utmIdFieldId = Number(process.env.KOMMO_UTM_ID_FIELD_ID || 692967);
+
+  const customFields = (
+    [
+      [utmSourceFieldId, input.utmSource],
+      [utmMediumFieldId, input.utmMedium],
+      [utmCampaignFieldId, input.utmCampaign],
+      [utmContentFieldId, input.utmContent],
+      [utmTermFieldId, input.utmTerm],
+      [utmIdFieldId, input.utmId],
+      [utmReferrerFieldId, input.sourceUrl],
+    ] as Array<[number, string | undefined]>
+  )
+    .filter(([, value]) => Boolean(value))
+    .map(([fieldId, value]) => ({ field_id: fieldId, values: [{ value: String(value) }] }));
+
+  if (customFields.length) {
+    try {
+      await kommoRequest('PATCH', `/leads/${leadId}`, [
+        { id: leadId, custom_fields_values: customFields },
+      ]);
+    } catch (err) {
+      console.error('[kommo] utm custom fields failed', err);
+    }
+  }
+
+  const note = utmNoteText(input);
+  if (note) {
+    try {
+      await kommoRequest('POST', `/leads/${leadId}/notes`, [
+        { note_type: 'common', params: { text: note } },
+      ]);
+    } catch (err) {
+      console.error('[kommo] utm note failed', err);
+    }
+  }
+}
+
 export async function createKommoLead(input: KommoCreateInput): Promise<KommoCreateResult> {
   const pipelineId = Number(process.env.KOMMO_PIPELINE_ID || 5481944);
   const statusId = Number(process.env.KOMMO_STATUS_ID || 48539240);
   const tags = ['LP Influenciadores'];
   if (input.courseType) tags.push(input.courseType);
+  if (input.utmSource) tags.push(input.utmSource.slice(0, 64));
 
   const origemFieldId = Number(process.env.KOMMO_ORIGEM_NEW_FIELD_ID || 686585);
   const origemEnumId = Number(process.env.KOMMO_ORIGEM_NEW_ENUM_ID || 452249);
@@ -98,6 +164,8 @@ export async function createKommoLead(input: KommoCreateInput): Promise<KommoCre
   ]);
   const leadId = leadBody?._embedded?.leads?.[0]?.id;
   if (!leadId) throw new Error('Kommo criou o lead mas não devolveu o id');
+
+  await applyUtmToLead(Number(leadId), input);
 
   const contactBody = await kommoRequest('POST', '/contacts', [
     {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowRight, CheckCircle2, MessageSquare } from 'lucide-react';
 import { LeadFormData } from '../types';
 import { commercialWhatsAppUrl } from '../utils/whatsapp';
+import { captureAndGetUtm } from '../utils/tracking';
 
 interface FormSheetProps {
   onSubmitSuccess: (data: LeadFormData) => void;
@@ -88,6 +89,7 @@ export const FormSheet: React.FC<FormSheetProps> = ({
           whatsapp,
           courseType,
           sourceUrl: window.location.href,
+          ...captureAndGetUtm(),
         }),
       });
       const payload = await res.json().catch(() => ({}));
@@ -106,7 +108,7 @@ export const FormSheet: React.FC<FormSheetProps> = ({
 
   const getWhatsAppUrl = () => {
     if (!submittedData) return '#';
-    return commercialWhatsAppUrl(submittedData.fullName);
+    return commercialWhatsAppUrl(submittedData.fullName, captureAndGetUtm().utm_source);
   };
 
   return (

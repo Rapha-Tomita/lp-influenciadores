@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { commercialWhatsAppUrl } from '../utils/whatsapp';
+import { captureAndGetUtm } from '../utils/tracking';
 
 export const HeroMap: React.FC = () => {
   const bgImageUrl = "/hero-coworking.jpg";
@@ -44,7 +45,7 @@ export const HeroMap: React.FC = () => {
         </div>
 
         <a
-          href={commercialWhatsAppUrl()}
+          href={commercialWhatsAppUrl(undefined, captureAndGetUtm().utm_source)}
           target="_blank"
           rel="noopener noreferrer"
           className="w-full md:w-auto bg-[#FFCC00] hover:bg-[#e6b800] active:scale-95 text-[#001A33] font-black py-3.5 px-6 md:px-8 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-transform"

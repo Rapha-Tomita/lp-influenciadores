@@ -45,6 +45,12 @@ export async function ensureLeadsSchema(): Promise<void> {
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS kommo_lead_id BIGINT;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS kommo_contact_id BIGINT;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS origem_new TEXT NOT NULL DEFAULT 'Form-influencer';
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_source TEXT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_medium TEXT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_campaign TEXT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_content TEXT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_term TEXT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_id TEXT;
       `);
     })().catch((err) => {
       schemaReady = null;

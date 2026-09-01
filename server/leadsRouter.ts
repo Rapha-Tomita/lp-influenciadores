@@ -8,6 +8,13 @@ type LeadBody = {
   couponCode?: string;
   courseType?: string;
   sourceUrl?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
+  utm_id?: string;
+  influencerCode?: string;
 };
 
 function digitsOnly(value: string): string {
@@ -24,6 +31,13 @@ export function createLeadsRouter(): Router {
     const couponCode = String(body.couponCode || '').trim().toUpperCase();
     const courseType = String(body.courseType || '').trim();
     const sourceUrl = String(body.sourceUrl || '').trim();
+    const utmSource = String(body.utm_source || '').trim().slice(0, 255);
+    const utmMedium = String(body.utm_medium || '').trim().slice(0, 255);
+    const utmCampaign = String(body.utm_campaign || '').trim().slice(0, 255);
+    const utmContent = String(body.utm_content || '').trim().slice(0, 255);
+    const utmTerm = String(body.utm_term || '').trim().slice(0, 255);
+    const utmId = String(body.utm_id || '').trim().slice(0, 255);
+    const influencerCode = String(body.influencerCode || couponCode || utmSource || '').trim().slice(0, 80);
     const phoneDigits = digitsOnly(whatsapp);
 
     if (fullName.length < 2) {
@@ -40,17 +54,24 @@ export function createLeadsRouter(): Router {
       const ORIGEM_NEW = 'Form-influencer';
       const result = await getPool().query(
         `INSERT INTO leads
-           (full_name, whatsapp, coupon_code, course_type, influencer_code, source_url, origem_new)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
+           (full_name, whatsapp, coupon_code, course_type, influencer_code, source_url, origem_new,
+            utm_source, utm_medium, utm_campaign, utm_content, utm_term, utm_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
          RETURNING id, created_at, origem_new`,
         [
           fullName,
           whatsapp,
-          couponCode || null,
+          couponCode || influencerCode || null,
           courseType || null,
-          couponCode || null,
+          influencerCode || null,
           sourceUrl || null,
           ORIGEM_NEW,
+          utmSource || null,
+          utmMedium || null,
+          utmCampaign || null,
+          utmContent || null,
+          utmTerm || null,
+          utmId || null,
         ],
       );
       const row = result.rows[0];
@@ -63,6 +84,13 @@ export function createLeadsRouter(): Router {
           phoneDigits,
           whatsapp,
           courseType,
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmContent,
+          utmTerm,
+          utmId,
+          sourceUrl,
         });
         kommoLeadId = kommo.leadId;
         kommoContactId = kommo.contactId;
