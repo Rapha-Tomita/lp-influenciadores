@@ -1,15 +1,8 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
+import { commercialWhatsAppUrl } from '../utils/whatsapp';
 
-interface HeroMapProps {
-  onScrollToForm: () => void;
-  whatsAppUrl?: string | null;
-}
-
-export const HeroMap: React.FC<HeroMapProps> = ({
-  onScrollToForm,
-  whatsAppUrl,
-}) => {
+export const HeroMap: React.FC = () => {
   const bgImageUrl = "/hero-coworking.jpg";
 
   return (
@@ -50,29 +43,17 @@ export const HeroMap: React.FC<HeroMapProps> = ({
           </p>
         </div>
 
-        {whatsAppUrl ? (
-          <a
-            href={whatsAppUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full md:w-auto bg-[#FFCC00] hover:bg-[#e6b800] active:scale-95 text-[#001A33] font-black py-3.5 px-6 md:px-8 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-transform"
-          >
-            <span className="uppercase tracking-tight text-sm md:text-base">GARANTIR MINHA BOLSA</span>
-            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#001A33] flex items-center justify-center text-white">
-              <ArrowRight className="w-4 h-4 stroke-[3]" />
-            </div>
-          </a>
-        ) : (
-          <button
-            onClick={onScrollToForm}
-            className="w-full md:w-auto bg-[#FFCC00] hover:bg-[#e6b800] active:scale-95 text-[#001A33] font-black py-3.5 px-6 md:px-8 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-transform cursor-pointer"
-          >
-            <span className="uppercase tracking-tight text-sm md:text-base">GARANTIR MINHA BOLSA</span>
-            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#001A33] flex items-center justify-center text-white">
-              <ArrowRight className="w-4 h-4 stroke-[3]" />
-            </div>
-          </button>
-        )}
+        <a
+          href={commercialWhatsAppUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full md:w-auto bg-[#FFCC00] hover:bg-[#e6b800] active:scale-95 text-[#001A33] font-black py-3.5 px-6 md:px-8 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-transform"
+        >
+          <span className="uppercase tracking-tight text-sm md:text-base">GARANTIR MINHA BOLSA</span>
+          <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#001A33] flex items-center justify-center text-white">
+            <ArrowRight className="w-4 h-4 stroke-[3]" />
+          </div>
+        </a>
       </div>
     </section>
   );
