@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { ArrowRight, CheckCircle2, MessageSquare } from 'lucide-react';
 import { LeadFormData } from '../types';
+import { commercialWhatsAppUrl } from '../utils/whatsapp';
 
 interface FormSheetProps {
   onSubmitSuccess: (data: LeadFormData) => void;
+  onReset?: () => void;
   formRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export const FormSheet: React.FC<FormSheetProps> = ({
   onSubmitSuccess,
+  onReset,
   formRef,
 }) => {
   const [fullName, setFullName] = useState('');
@@ -103,8 +106,7 @@ export const FormSheet: React.FC<FormSheetProps> = ({
 
   const getWhatsAppUrl = () => {
     if (!submittedData) return '#';
-    const text = `Olá! Meu nome é ${submittedData.fullName}. Vim pela campanha e quero garantir minha bolsa na Cruzeiro do Sul!`;
-    return `https://wa.me/5511917479873?text=${encodeURIComponent(text)}`;
+    return commercialWhatsAppUrl(submittedData.fullName);
   };
 
   return (
@@ -226,7 +228,10 @@ export const FormSheet: React.FC<FormSheetProps> = ({
             </a>
 
             <button
-              onClick={() => setIsSubmitted(false)}
+              onClick={() => {
+                setIsSubmitted(false);
+                onReset?.();
+              }}
               className="mt-4 text-xs font-bold text-gray-500 hover:text-[#001A33] underline cursor-pointer"
             >
               Corrigir meus dados

@@ -3,10 +3,12 @@ import { ArrowRight } from 'lucide-react';
 
 interface HeroMapProps {
   onScrollToForm: () => void;
+  whatsAppUrl?: string | null;
 }
 
 export const HeroMap: React.FC<HeroMapProps> = ({
   onScrollToForm,
+  whatsAppUrl,
 }) => {
   const bgImageUrl = "/hero-coworking.jpg";
 
@@ -48,16 +50,29 @@ export const HeroMap: React.FC<HeroMapProps> = ({
           </p>
         </div>
 
-        {/* Action Button */}
-        <button
-          onClick={onScrollToForm}
-          className="w-full md:w-auto bg-[#FFCC00] hover:bg-[#e6b800] active:scale-95 text-[#001A33] font-black py-3.5 px-6 md:px-8 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-transform cursor-pointer"
-        >
-          <span className="uppercase tracking-tight text-sm md:text-base">GARANTIR MINHA BOLSA</span>
-          <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#001A33] flex items-center justify-center text-white">
-            <ArrowRight className="w-4 h-4 stroke-[3]" />
-          </div>
-        </button>
+        {whatsAppUrl ? (
+          <a
+            href={whatsAppUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full md:w-auto bg-[#FFCC00] hover:bg-[#e6b800] active:scale-95 text-[#001A33] font-black py-3.5 px-6 md:px-8 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-transform"
+          >
+            <span className="uppercase tracking-tight text-sm md:text-base">GARANTIR MINHA BOLSA</span>
+            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#001A33] flex items-center justify-center text-white">
+              <ArrowRight className="w-4 h-4 stroke-[3]" />
+            </div>
+          </a>
+        ) : (
+          <button
+            onClick={onScrollToForm}
+            className="w-full md:w-auto bg-[#FFCC00] hover:bg-[#e6b800] active:scale-95 text-[#001A33] font-black py-3.5 px-6 md:px-8 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition-transform cursor-pointer"
+          >
+            <span className="uppercase tracking-tight text-sm md:text-base">GARANTIR MINHA BOLSA</span>
+            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#001A33] flex items-center justify-center text-white">
+              <ArrowRight className="w-4 h-4 stroke-[3]" />
+            </div>
+          </button>
+        )}
       </div>
     </section>
   );

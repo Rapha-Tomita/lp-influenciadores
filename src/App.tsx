@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { BENEFITS_LIST } from './data/influencers';
 import { Header } from './components/Header';
 import { HeroMap } from './components/HeroMap';
@@ -7,9 +7,11 @@ import { FormSheet } from './components/FormSheet';
 import { FAQ } from './components/FAQ';
 import { Footer } from './components/Footer';
 import { LeadFormData } from './types';
+import { commercialWhatsAppUrl } from './utils/whatsapp';
 
 export default function App() {
   const formSectionRef = useRef<HTMLDivElement | null>(null);
+  const [whatsAppUrl, setWhatsAppUrl] = useState<string | null>(null);
 
   const handleScrollToForm = () => {
     if (formSectionRef.current) {
@@ -22,7 +24,7 @@ export default function App() {
   };
 
   const handleFormSuccess = (data: LeadFormData) => {
-    console.log('Lead captured successfully:', data);
+    setWhatsAppUrl(commercialWhatsAppUrl(data.fullName));
   };
 
   return (
@@ -33,13 +35,14 @@ export default function App() {
 
           <div className="block md:hidden">
             <div className="px-6 mt-3.5 mb-6">
-              <HeroMap onScrollToForm={handleScrollToForm} />
+              <HeroMap onScrollToForm={handleScrollToForm} whatsAppUrl={whatsAppUrl} />
             </div>
 
             <BenefitsGrid benefits={BENEFITS_LIST} />
 
             <FormSheet
               onSubmitSuccess={handleFormSuccess}
+              onReset={() => setWhatsAppUrl(null)}
               formRef={formSectionRef}
             />
 
@@ -51,12 +54,13 @@ export default function App() {
           <div className="hidden md:block px-8 lg:px-12 pt-4 lg:pt-6 pb-8 lg:pb-12 space-y-8 lg:space-y-12">
             <div className="grid grid-cols-12 gap-8 lg:gap-12 items-stretch">
               <div className="col-span-8">
-                <HeroMap onScrollToForm={handleScrollToForm} />
+                <HeroMap onScrollToForm={handleScrollToForm} whatsAppUrl={whatsAppUrl} />
               </div>
 
               <div className="col-span-4">
                 <FormSheet
                   onSubmitSuccess={handleFormSuccess}
+                  onReset={() => setWhatsAppUrl(null)}
                   formRef={formSectionRef}
                 />
               </div>
