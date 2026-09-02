@@ -4,15 +4,9 @@ import { commercialWhatsAppUrl } from '../utils/whatsapp';
 import { captureAndGetUtm } from '../utils/tracking';
 
 export const HeroMap: React.FC = () => {
-  const bgImageUrl = "/hero-coworking.jpg";
-
   return (
     <section className="relative px-6 pt-7 pb-6 md:p-6 lg:p-8 rounded-2xl md:rounded-3xl overflow-hidden md:h-full md:flex md:flex-col md:justify-end border border-white/10 shadow-lg bg-[#001A33]">
-      {/* Background Image - Only on Desktop */}
-      <div 
-        className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url("${bgImageUrl}")` }}
-      />
+      <div className="hidden md:block absolute inset-0 hero-photo" />
 
       {/* Gradient Overlay for Text Readability - Only on Desktop */}
       <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-[#001A33]/65 via-[#001A33]/45 to-[#001A33]/20" />

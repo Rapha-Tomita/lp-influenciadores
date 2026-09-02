@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { lazy, Suspense, useRef } from 'react';
 import { BENEFITS_LIST } from './data/influencers';
 import { Header } from './components/Header';
 import { HeroMap } from './components/HeroMap';
@@ -6,17 +6,30 @@ import { BenefitsGrid } from './components/BenefitsGrid';
 import { FormSheet } from './components/FormSheet';
 import { FAQ } from './components/FAQ';
 import { Footer } from './components/Footer';
-import { LinkGenerator } from './components/LinkGenerator';
-import { CampaignResults } from './components/CampaignResults';
 import { LeadFormData } from './types';
+
+const LinkGenerator = lazy(() =>
+  import('./components/LinkGenerator').then((m) => ({ default: m.LinkGenerator })),
+);
+const CampaignResults = lazy(() =>
+  import('./components/CampaignResults').then((m) => ({ default: m.CampaignResults })),
+);
 
 export default function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
   if (path === '/gerador' || path === '/links') {
-    return <LinkGenerator />;
+    return (
+      <Suspense fallback={null}>
+        <LinkGenerator />
+      </Suspense>
+    );
   }
   if (path === '/resultados') {
-    return <CampaignResults />;
+    return (
+      <Suspense fallback={null}>
+        <CampaignResults />
+      </Suspense>
+    );
   }
   return <LandingPage />;
 }
