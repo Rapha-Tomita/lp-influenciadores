@@ -24,6 +24,22 @@ function digitsOnly(value: string): string {
 export function createLeadsRouter(): Router {
   const router = Router();
 
+  router.get('/leads/stats', async (_req, res) => {
+    try {
+      await ensureLeadsSchema();
+      const result = await getPool().query(
+        `SELECT influencer, total_leads, com_kommo, canais, campanhas, primeiro, ultimo
+         FROM leads_por_influencer
+         ORDER BY total_leads DESC, influencer ASC`,
+      );
+      const total = result.rows.reduce((sum, row) => sum + Number(row.total_leads), 0);
+      res.json({ ok: true, total, rows: result.rows });
+    } catch (err) {
+      console.error('[leads] stats failed', err);
+      res.status(500).json({ ok: false, error: 'Não foi possível carregar os resultados.' });
+    }
+  });
+
   router.post('/leads', async (req, res) => {
     const body = (req.body || {}) as LeadBody;
     const fullName = String(body.fullName || '').trim();

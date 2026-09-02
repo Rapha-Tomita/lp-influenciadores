@@ -52,10 +52,17 @@ export const LinkGenerator: React.FC = () => {
           <Header />
           <section className="px-4 py-6 md:px-8 md:py-10">
             <div className="bg-[#F5F5F0] rounded-[36px] p-6 sm:p-8 shadow-2xl text-[#001A33] border border-white/60">
-              <h1 className="text-2xl font-black tracking-tight mb-1">Gerar link do influenciador</h1>
-              <p className="text-xs text-gray-600 font-medium mb-6">
-                Preencha e copie. Quem abrir esse link fica marcado no lead (Kommo + banco).
-              </p>
+              <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
+                <div>
+                  <h1 className="text-2xl font-black tracking-tight mb-1">Gerar link do influenciador</h1>
+                  <p className="text-xs text-gray-600 font-medium">
+                    Preencha e copie. Quem abrir esse link fica marcado no lead (Kommo + banco).
+                  </p>
+                </div>
+                <a href="/resultados" className="text-xs font-bold text-[#001A33] underline">
+                  Ver resultados
+                </a>
+              </div>
 
               <label className="text-[10px] font-black uppercase text-gray-400 ml-1 tracking-wider block mb-1">
                 Influenciador

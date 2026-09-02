@@ -52,6 +52,23 @@ export async function ensureLeadsSchema(): Promise<void> {
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_term TEXT;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_id TEXT;
       `);
+      await getPool().query(`
+        CREATE OR REPLACE VIEW leads_por_influencer AS
+        SELECT
+          COALESCE(
+            NULLIF(TRIM(utm_source), ''),
+            NULLIF(TRIM(influencer_code), ''),
+            '(sem utm)'
+          ) AS influencer,
+          COUNT(*)::bigint AS total_leads,
+          COUNT(kommo_lead_id)::bigint AS com_kommo,
+          COUNT(DISTINCT NULLIF(TRIM(utm_medium), ''))::bigint AS canais,
+          COUNT(DISTINCT NULLIF(TRIM(utm_campaign), ''))::bigint AS campanhas,
+          MIN(created_at) AS primeiro,
+          MAX(created_at) AS ultimo
+        FROM leads
+        GROUP BY 1;
+      `);
     })().catch((err) => {
       schemaReady = null;
       throw err;

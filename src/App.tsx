@@ -7,12 +7,16 @@ import { FormSheet } from './components/FormSheet';
 import { FAQ } from './components/FAQ';
 import { Footer } from './components/Footer';
 import { LinkGenerator } from './components/LinkGenerator';
+import { CampaignResults } from './components/CampaignResults';
 import { LeadFormData } from './types';
 
 export default function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
   if (path === '/gerador' || path === '/links') {
     return <LinkGenerator />;
+  }
+  if (path === '/resultados') {
+    return <CampaignResults />;
   }
   return <LandingPage />;
 }
