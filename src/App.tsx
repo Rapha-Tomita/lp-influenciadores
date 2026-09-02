@@ -6,11 +6,19 @@ import { BenefitsGrid } from './components/BenefitsGrid';
 import { FormSheet } from './components/FormSheet';
 import { FAQ } from './components/FAQ';
 import { Footer } from './components/Footer';
+import { LinkGenerator } from './components/LinkGenerator';
 import { LeadFormData } from './types';
 
 export default function App() {
-  const formSectionRef = useRef<HTMLDivElement | null>(null);
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  if (path === '/gerador' || path === '/links') {
+    return <LinkGenerator />;
+  }
+  return <LandingPage />;
+}
 
+function LandingPage() {
+  const formSectionRef = useRef<HTMLDivElement | null>(null);
   const handleFormSuccess = (_data: LeadFormData) => {};
 
   return (
