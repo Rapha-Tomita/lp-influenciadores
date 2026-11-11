@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { ensureLeadsSchema, getPool } from './db.ts';
-import { createKommoLead } from './kommo.ts';
 
 type LeadBody = {
   fullName?: string;
@@ -28,7 +27,7 @@ export function createLeadsRouter(): Router {
     try {
       await ensureLeadsSchema();
       const result = await getPool().query(
-        `SELECT influencer, total_leads, com_kommo, canais, campanhas, primeiro, ultimo
+        `SELECT influencer, total_leads, canais, campanhas, primeiro, ultimo
          FROM leads_por_influencer
          ORDER BY total_leads DESC, influencer ASC`,
       );
@@ -92,45 +91,11 @@ export function createLeadsRouter(): Router {
       );
       const row = result.rows[0];
 
-      let kommoLeadId: number | null = null;
-      let kommoContactId: number | null = null;
-      try {
-        const kommo = await createKommoLead({
-          fullName,
-          phoneDigits,
-          whatsapp,
-          courseType,
-          utmSource,
-          utmMedium,
-          utmCampaign,
-          utmContent,
-          utmTerm,
-          utmId,
-          sourceUrl,
-        });
-        kommoLeadId = kommo.leadId;
-        kommoContactId = kommo.contactId;
-        await getPool().query(
-          `UPDATE leads SET kommo_lead_id = $1, kommo_contact_id = $2 WHERE id = $3`,
-          [kommoLeadId, kommoContactId, row.id],
-        );
-      } catch (kommoErr) {
-        console.error('[leads] kommo create failed', kommoErr);
-        res.status(502).json({
-          ok: false,
-          error: 'Recebemos seus dados, mas não foi possível criar o lead no Kommo. Tente de novo.',
-          id: row.id,
-        });
-        return;
-      }
-
       res.status(201).json({
         ok: true,
         id: row.id,
         createdAt: row.created_at,
         origemNew: row.origem_new,
-        kommoLeadId,
-        kommoContactId,
       });
     } catch (err) {
       console.error('[leads] insert failed', err);

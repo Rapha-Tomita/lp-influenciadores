@@ -4,7 +4,6 @@ import { Header } from './Header';
 type StatRow = {
   influencer: string;
   total_leads: string | number;
-  com_kommo: string | number;
   canais: string | number;
   campanhas: string | number;
   primeiro: string | null;
@@ -75,21 +74,20 @@ export const CampaignResults: React.FC = () => {
                     <tr className="text-[10px] font-black uppercase tracking-wider text-gray-400">
                       <th className="pb-2 pr-3">Influenciador</th>
                       <th className="pb-2 pr-3 text-right">Leads</th>
-                      <th className="pb-2 pr-3 text-right">Kommo</th>
                       <th className="pb-2 pr-3 hidden sm:table-cell">Último</th>
                     </tr>
                   </thead>
                   <tbody>
                     {loading && (
                       <tr>
-                        <td colSpan={4} className="py-6 text-gray-400 font-semibold">
+                        <td colSpan={3} className="py-6 text-gray-400 font-semibold">
                           Carregando...
                         </td>
                       </tr>
                     )}
                     {!loading && rows.length === 0 && (
                       <tr>
-                        <td colSpan={4} className="py-6 text-gray-400 font-semibold">
+                        <td colSpan={3} className="py-6 text-gray-400 font-semibold">
                           Nenhum lead ainda.
                         </td>
                       </tr>
@@ -98,7 +96,6 @@ export const CampaignResults: React.FC = () => {
                       <tr key={row.influencer} className="border-t border-gray-200">
                         <td className="py-3 pr-3 font-black">{row.influencer}</td>
                         <td className="py-3 pr-3 text-right font-black">{row.total_leads}</td>
-                        <td className="py-3 pr-3 text-right font-semibold text-gray-600">{row.com_kommo}</td>
                         <td className="py-3 pr-3 hidden sm:table-cell text-xs font-semibold text-gray-500">
                           {formatDate(row.ultimo)}
                         </td>

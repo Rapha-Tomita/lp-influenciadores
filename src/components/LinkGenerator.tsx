@@ -63,7 +63,7 @@ export const LinkGenerator: React.FC = () => {
                 <div>
                   <h1 className="text-2xl font-black tracking-tight mb-1">Gerar link do influenciador</h1>
                   <p className="text-xs text-gray-600 font-medium">
-                    Preencha e copie. Quem abrir esse link fica marcado no lead (Kommo + banco).
+                    Preencha e copie. Quem abrir esse link fica marcado no lead (banco).
                   </p>
                 </div>
                 <a href="/resultados" className="text-xs font-bold text-[#001A33] underline">
