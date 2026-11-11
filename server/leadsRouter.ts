@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { ensureLeadsSchema, getPool } from './db.ts';
+import { bwipoEnabled, createBwipoLead } from './bwipo.ts';
 
 type LeadBody = {
   fullName?: string;
@@ -91,11 +92,27 @@ export function createLeadsRouter(): Router {
       );
       const row = result.rows[0];
 
+      // Envia ao Bwipo sem bloquear o aluno: se falhar, o lead já está salvo no banco.
+      let bwipoDealId: string | null = null;
+      if (bwipoEnabled()) {
+        try {
+          const bwipo = await createBwipoLead({ fullName, phoneDigits, courseType });
+          bwipoDealId = bwipo.dealId;
+          await getPool().query(
+            `UPDATE leads SET bwipo_deal_id = $1, bwipo_contact_id = $2 WHERE id = $3`,
+            [bwipo.dealId, bwipo.contactId, row.id],
+          );
+        } catch (bwipoErr) {
+          console.error('[leads] bwipo create failed', { leadId: row.id }, bwipoErr);
+        }
+      }
+
       res.status(201).json({
         ok: true,
         id: row.id,
         createdAt: row.created_at,
         origemNew: row.origem_new,
+        bwipoDealId,
       });
     } catch (err) {
       console.error('[leads] insert failed', err);

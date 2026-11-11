@@ -44,6 +44,8 @@ export async function ensureLeadsSchema(): Promise<void> {
       await getPool().query(`
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS kommo_lead_id BIGINT;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS kommo_contact_id BIGINT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS bwipo_deal_id TEXT;
+        ALTER TABLE leads ADD COLUMN IF NOT EXISTS bwipo_contact_id TEXT;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS origem_new TEXT NOT NULL DEFAULT 'Form-influencer';
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_source TEXT;
         ALTER TABLE leads ADD COLUMN IF NOT EXISTS utm_medium TEXT;
