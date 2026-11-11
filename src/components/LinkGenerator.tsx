@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Check, Copy } from 'lucide-react';
+import { Check, Copy, MessageCircle } from 'lucide-react';
 import { Header } from './Header';
 import { buildInfluencerLink, slugifyUtm } from '../utils/tracking';
+import { commercialWhatsAppUrl } from '../utils/whatsapp';
 
 const CHANNELS = [
   { id: 'instagram', label: 'Instagram' },
@@ -21,7 +22,7 @@ export const LinkGenerator: React.FC = () => {
   const [customChannel, setCustomChannel] = useState('');
   const [campaign, setCampaign] = useState('influenciadores');
   const [content, setContent] = useState('');
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'lp' | 'whatsapp' | null>(null);
 
   const medium = channel === 'outro' ? customChannel : channel;
   const sourceSlug = slugifyUtm(influencer);
@@ -38,11 +39,17 @@ export const LinkGenerator: React.FC = () => {
     [influencer, medium, campaign, content, sourceSlug],
   );
 
-  const copyLink = async () => {
-    if (!link) return;
-    await navigator.clipboard.writeText(link);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+  const mediumSlug = slugifyUtm(medium, 40);
+  const whatsappLink = sourceSlug
+    ? commercialWhatsAppUrl(undefined, mediumSlug ? `${sourceSlug} / ${mediumSlug}` : sourceSlug)
+    : '';
+
+  const copyLink = async (which: 'lp' | 'whatsapp') => {
+    const value = which === 'lp' ? link : whatsappLink;
+    if (!value) return;
+    await navigator.clipboard.writeText(value);
+    setCopied(which);
+    window.setTimeout(() => setCopied(null), 1800);
   };
 
   return (
@@ -130,11 +137,36 @@ export const LinkGenerator: React.FC = () => {
                 <button
                   type="button"
                   disabled={!link}
-                  onClick={copyLink}
+                  onClick={() => copyLink('lp')}
                   className="mt-4 w-full py-3.5 px-5 bg-[#FFCC00] hover:bg-[#e6b800] disabled:opacity-40 text-[#001A33] font-black text-sm rounded-2xl flex items-center justify-center gap-2"
                 >
-                  {copied ? <Check className="w-4 h-4 stroke-[3]" /> : <Copy className="w-4 h-4 stroke-[2.5]" />}
-                  {copied ? 'COPIADO' : 'COPIAR LINK'}
+                  {copied === 'lp' ? <Check className="w-4 h-4 stroke-[3]" /> : <Copy className="w-4 h-4 stroke-[2.5]" />}
+                  {copied === 'lp' ? 'COPIADO' : 'COPIAR LINK'}
+                </button>
+              </div>
+
+              <div className="mt-4 bg-white rounded-2xl border border-gray-200 p-4">
+                <p className="text-[10px] font-black uppercase text-gray-400 tracking-wider mb-2 flex items-center gap-1.5">
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  Link do WhatsApp (direto pro comercial)
+                </p>
+                <p className="text-xs font-semibold break-all text-[#001A33] min-h-[3rem]">
+                  {whatsappLink || 'Digite o nome do influenciador'}
+                </p>
+                {whatsappLink && (
+                  <p className="text-[11px] text-gray-500 mt-2">
+                    Não passa pela LP nem cria lead automático. A origem vai escrita na mensagem
+                    que o aluno envia, pro comercial identificar o influenciador.
+                  </p>
+                )}
+                <button
+                  type="button"
+                  disabled={!whatsappLink}
+                  onClick={() => copyLink('whatsapp')}
+                  className="mt-4 w-full py-3.5 px-5 bg-[#25D366] hover:bg-[#1fb857] disabled:opacity-40 text-[#001A33] font-black text-sm rounded-2xl flex items-center justify-center gap-2"
+                >
+                  {copied === 'whatsapp' ? <Check className="w-4 h-4 stroke-[3]" /> : <Copy className="w-4 h-4 stroke-[2.5]" />}
+                  {copied === 'whatsapp' ? 'COPIADO' : 'COPIAR LINK DO WHATSAPP'}
                 </button>
               </div>
             </div>
